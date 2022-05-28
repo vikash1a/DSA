@@ -1,0 +1,5 @@
+.exe
+.dSYM
+bin/
+obj/
+.DS_Store
