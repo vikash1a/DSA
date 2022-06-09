@@ -16,16 +16,24 @@ class Graph{
             // print(dfsV);
             //
 
-            //detect cycle in undirected graph
+            // //detect cycle in undirected graph
+            // vector<vector<int>> vvg ;
+            // vvg.push_back({1,2});
+            // vvg.push_back({0,2});
+            // vvg.push_back({0,1,3});
+            // vvg.push_back({2});
+
+           
+            //detect cycle in directed graph
             vector<vector<int>> vvg ;
             vvg.push_back({1,2});
-            vvg.push_back({0,2});
-            vvg.push_back({0,1,3});
             vvg.push_back({2});
+            vvg.push_back({0,3});
+            vvg.push_back({3});
 
-            bool result = detectCycle(vvg);
+            bool result = detectCycleDirected(vvg);
             cout<<" cycle detected - "<<result<<endl;
-            //
+            
             return ;
         }
         void print(vector<int> v){
@@ -114,6 +122,38 @@ class Graph{
                 }
                 else if(m != parent)return true;
             }
+            return false;
+        }
+        //
+
+        //detect cycle in directed graph
+        //tc - o(v+e), sc - O(v)
+        bool detectCycleDirected(vector<vector<int>> adj){
+            int na = adj.size()-1;
+            vector<bool> visited(na+1, false);
+            vector<bool> recStack(na+1, false);
+            for(int i=0;i<=na;i++){
+               if(!visited[i] && detectCycleDirectedUtil(adj,i,visited,recStack)){
+                   return true;
+               }
+            }
+            return false;
+        }
+        bool detectCycleDirectedUtil(vector<vector<int>> adj,int k,vector<bool> &visited,vector<bool> recStack){
+            if(!visited[k]){
+                visited[k]=true;
+                recStack[k]=true;
+                for(int i=0;i<=adj[k].size()-1;i++){
+                    int elem = adj[k][i];
+                    if(!visited[elem]){
+                        if(detectCycleDirectedUtil(adj,elem,visited,recStack))return true;
+                    }
+                    else{
+                        if(recStack[elem])return true;
+                    }
+                }
+            }
+            recStack[k]=false;
             return false;
         }
         //
