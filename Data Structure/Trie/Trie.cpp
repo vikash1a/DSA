@@ -3,7 +3,8 @@ using namespace std;
 
 class Node{
     private:
-        bool flag;
+        int countEndWith = 0;
+        int countPrefix = 0;
         vector<Node*> nodeV;
        
     public:
@@ -20,11 +21,23 @@ class Node{
         Node* get(char c){
             return nodeV[c-'a'];
         }
-        void setEnd(){
-            flag = true;
+        void incrementCountEnWith(){
+            countEndWith+=1;
         }
-        bool isEnd(){
-            return flag;
+        void decrementCountEnWith(){
+            countEndWith-=1;
+        }
+        int getCountEndWith(){
+            return countEndWith;
+        }
+        int getCountPrefix(){
+            return countPrefix;
+        }
+        void incrementCountPrefix(){
+            countPrefix+=1;
+        }
+        void decrementCountPrefix(){
+            countPrefix-=1;
         }
 
 };
@@ -42,45 +55,59 @@ class Trie{
             for(char c : word){
                 if(!node->containsKey(c)){
                     node->put(new Node(),c);
-                    
                 }   
                 node = node->get(c);
+                node->incrementCountPrefix();
+                
             }
-            node->setEnd();
+            node->incrementCountEnWith();
         }
-        bool searchWord(string word){
+        int countSearchWord(string word){
             Node* node = root;
             for(char c : word){
                 if(node->containsKey(c)){
                     node = node->get(c);
                 }   
-                else return false;
+                else return 0;
             }
-            return node->isEnd();
+            return node->getCountEndWith();
         }
-        bool startsWithWord(string word){
+        int countStartsWithWord(string word){
             Node* node = root;
             for(char c : word){
                 if(node->containsKey(c)){
                     node = node->get(c);
                 }   
-                else return false;
+                else return 0;
             }
-            return true;
+            return node->getCountPrefix();
+        }
+        void eraseWord(string word){
+            Node* node = root;
+            for(char c : word){
+                if(node->containsKey(c)){
+                    node = node->get(c);
+                    node->decrementCountPrefix();
+                }   
+                else return;
+            }
+            node->decrementCountEnWith();
+            return;
         }
 
 };
 
 int main(){
-    cout<<"hello world\n";
+    // cout<<"hello world\n";
     Trie* trie = new Trie();
     trie->insertWord("bus");
     trie->insertWord("buses");
     trie->insertWord("truck");
-    cout<<trie->searchWord("bu")<<endl;
-    cout<<trie->searchWord("bus")<<endl;
-    cout<<trie->searchWord("buses")<<endl;
-    cout<<trie->startsWithWord("buse")<<endl;
-    cout<<trie->searchWord("truck")<<endl;
+    cout<<trie->countSearchWord("bu")<<endl;
+    cout<<trie->countSearchWord("bus")<<endl;
+    trie->eraseWord("buses");
+    cout<<trie->countSearchWord("buses")<<endl;
+    cout<<trie->countStartsWithWord("bu")<<endl;
+    cout<<trie->countSearchWord("truck")<<endl;
     return 0;
 }
