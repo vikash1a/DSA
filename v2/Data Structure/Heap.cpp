@@ -8,20 +8,22 @@ void print(vector<int> v){
 }
 void heapifyHelper(vector<int>& v, int i, int n){
     int l = 2*i+1, r = 2*i+2;
-    if(r>n)return;
-    if(v[i]<v[l] && v[l]>v[r]){
-        swap(v[i],v[l]);
-        heapifyHelper(v,l,n);
+    int largest = i;
+    if(l<=n && (v[largest]<v[l])){
+        largest = l;
     }
-    else if(v[i]<v[r]){
-        swap(v[i],v[r]);
-        heapifyHelper(v,r,n);
+    if(r<=n && (v[largest]<v[r])) {
+        largest = r;
+    }
+    if(largest!=i){
+        swap(v[i],v[largest]);
+        heapifyHelper(v,largest,n);
     }
     return;
 }
 void heapify(vector<int>& v){
     int n = v.size()-1;
-    for(int i=n/2-1; i>=0; i--){
+    for(int i=n/2; i>=0; i--){
         heapifyHelper(v,i,n);
         print(v);
     }
@@ -29,7 +31,8 @@ void heapify(vector<int>& v){
 
 int main(){
     cout<<"hello world"<<endl;
-    vector<int> v = {4,2,6,3,7,5,4,32,5};
+    // vector<int> v = {4,2,6,3,7,5,4,32,5};
+    vector<int> v = {3,1,2,4};
     heapify(v);
     // print(v);
     return 0;
